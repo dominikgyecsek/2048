@@ -5,7 +5,7 @@
 	<style>
 
 	body {
-		font-size: 2em;
+		font-size: 6em;
 		line-height: 200px;
 		text-align: center;
 	}
@@ -20,7 +20,7 @@
 	.tile {
 		width: 200px;
 		height: 200px;
-		background-color: yellow;
+		background-color: gray;
 		float: left;
 	}
 
@@ -54,8 +54,15 @@
 	var exit = false;
 	var relVal;
 	var toContinue = true;
-	var firstWDirection = [2, 1, 0];
-	var firstSDirection = [8, 7, 6];
+	var wDirection = [2, 1, 0];
+	var wSpace = [3, 6];
+	var sDirection = [8, 7, 6];
+	var sSpace = [-3, -6];
+	var aDirection = [0, 3, 6];
+	var aSpace = [1, 2];
+	var dDirection = [2, 5, 8];
+	var dSpace = [-1, -2];
+	var spaceOne, spaceTwo;
 	$("#2").text("2");
 
 	$("#inputField").keyup(function(){
@@ -65,80 +72,65 @@
 			direction = $("#inputField").val();
 			$("#inputField").val("");
 
-			if (direction == "w") {
-				for (var i = 0; i < firstWDirection.length; i++) {
-					relVal = firstWDirection[i];
-					if ( ($("#"+relVal).text() == $("#"+(relVal+3)).text()) && ($("#"+relVal).text()) == ($("#"+(relVal+6)).text() && $("#"+relVal).text() == "") ) {
-						exit = true;	
-					} else {
-						if (($("#"+relVal).text() == "") && ($("#"+(relVal+3)).text() == "")){
-								$("#"+(relVal)).text($("#"+(relVal+6)).text());
-								$("#"+(relVal+6)).text("");
-						} else if ($("#"+relVal).text() == "") {
-							if ($("#"+(relVal+3)).text() == ($("#"+(relVal+6)).text())) {
-								$("#"+relVal).text(parseInt($("#"+(relVal+3)).text())*2);
-								$("#"+(relVal+3)).text("");
-								$("#"+(relVal+6)).text("");
-							} else {
-								$("#"+relVal).text($("#"+(relVal+3)).text());
-								$("#"+(relVal+3)).text($("#"+(relVal+6)).text());
-								$("#"+(relVal+6)).text("");
-							}
-						} else if ($("#"+(relVal+3)).text() == "") {
-							if ($("#"+relVal).text() == $("#"+(relVal+6)).text()) {
-								$("#"+relVal).text(parseInt($("#"+relVal).text())*2);
-								$("#"+(relVal+6)).text("");
-							} else {
-								$("#"+(relVal+3)).text($("#"+(relVal+6)).text());
-								$("#"+(relVal+6)).text("");
-							}
-						} else if (($("#"+relVal).text()) == $("#"+(relVal+3)).text()) {
-							$("#"+relVal).text(parseInt($("#"+relVal).text())*2);
-							$("#"+(relVal+3)).text($("#"+(relVal+6)).text());
-							$("#"+(relVal+6)).text("");
-						} else if ($("#"+(relVal+6)).text() == $("#"+(relVal+3)).text()) {
-							$("#"+(relVal+3)).text(parseInt($("#"+(relVal+6)).text())*2);	
-							$("#"+(relVal+6)).text("");
-						}
-					}	
+			for (var i = 0; i < 3; i++) {
+
+				if (direction == "w") {
+					relVal = wDirection[i];
+					spaceOne = wSpace[0];
+					spaceTwo = wSpace[1];
 				}
-			} else if (direction == "s") {
-				for (var i = 0; i < firstSDirection.length; i++) {
-					relVal = firstSDirection[i];
-					if ( ($("#"+relVal).text() == $("#"+(relVal-3)).text()) && ($("#"+relVal).text()) == ($("#"+(relVal-6)).text() && $("#"+relVal).text() == "") ) {
-						exit = true;	
-					} else {
-						if (($("#"+relVal).text() == "") && ($("#"+(relVal-3)).text() == "")){
-								$("#"+(relVal)).text($("#"+(relVal-6)).text());
-								$("#"+(relVal-6)).text("");
-						} else if ($("#"+relVal).text() == "") {
-							if ($("#"+(relVal-3)).text() == ($("#"+(relVal-6)).text())) {
-								$("#"+relVal).text(parseInt($("#"+(relVal-3)).text())*2);
-								$("#"+(relVal-3)).text("");
-								$("#"+(relVal-6)).text("");
-							} else {
-								$("#"+relVal).text($("#"+(relVal-3)).text());
-								$("#"+(relVal-3)).text($("#"+(relVal-6)).text());
-								$("#"+(relVal-6)).text("");
-							}
-						} else if ($("#"+(relVal-3)).text() == "") {
-							if ($("#"+relVal).text() == $("#"+(relVal-6)).text()) {
-								$("#"+relVal).text(parseInt($("#"+relVal).text())*2);
-								$("#"+(relVal-6)).text("");
-							} else {
-								$("#"+(relVal-3)).text($("#"+(relVal-6)).text());
-								$("#"+(relVal-6)).text("");
-							}
-						} else if (($("#"+relVal).text()) == $("#"+(relVal-3)).text()) {
-							$("#"+relVal).text(parseInt($("#"+relVal).text())*2);
-							$("#"+(relVal-3)).text($("#"+(relVal-6)).text());
-							$("#"+(relVal-6)).text("");
-						} else if ($("#"+(relVal-6)).text() == $("#"+(relVal-3)).text()) {
-							$("#"+(relVal-3)).text(parseInt($("#"+(relVal-6)).text())*2);	
-							$("#"+(relVal-6)).text("");
+
+				if (direction == "s") {
+					relVal = sDirection[i];
+					spaceOne = sSpace[0];
+					spaceTwo = sSpace[1];
+				}	
+
+				if (direction == "a") {
+					relVal = aDirection[i];
+					spaceOne = aSpace[0];
+					spaceTwo = aSpace[1];
+				}	
+
+				if (direction == "d") {
+					relVal = dDirection[i];
+					spaceOne = dSpace[0];
+					spaceTwo = dSpace[1];
+				}	
+
+				if ( ($("#"+relVal).text() == $("#"+(relVal+spaceOne)).text()) && ($("#"+relVal).text()) == ($("#"+(relVal+spaceTwo)).text() && $("#"+relVal).text() == "") ) {
+					exit = true;	
+				} else {
+					if (($("#"+relVal).text() == "") && ($("#"+(relVal+spaceOne)).text() == "")){
+							$("#"+(relVal)).text($("#"+(relVal+spaceTwo)).text());
+							$("#"+(relVal+spaceTwo)).text("");
+					} else if ($("#"+relVal).text() == "") {
+						if ($("#"+(relVal+spaceOne)).text() == ($("#"+(relVal+spaceTwo)).text())) {
+							$("#"+relVal).text(parseInt($("#"+(relVal+spaceOne)).text())*2);
+							$("#"+(relVal+spaceOne)).text("");
+							$("#"+(relVal+spaceTwo)).text("");
+						} else {
+							$("#"+relVal).text($("#"+(relVal+spaceOne)).text());
+							$("#"+(relVal+spaceOne)).text($("#"+(relVal+spaceTwo)).text());
+							$("#"+(relVal+spaceTwo)).text("");
 						}
-					}	
-				}
+					} else if ($("#"+(relVal+spaceOne)).text() == "") {
+						if ($("#"+relVal).text() == $("#"+(relVal+spaceTwo)).text()) {
+							$("#"+relVal).text(parseInt($("#"+relVal).text())*2);
+							$("#"+(relVal+spaceTwo)).text("");
+						} else {
+							$("#"+(relVal+spaceOne)).text($("#"+(relVal+spaceTwo)).text());
+							$("#"+(relVal+spaceTwo)).text("");
+						}
+					} else if (($("#"+relVal).text()) == $("#"+(relVal+spaceOne)).text()) {
+						$("#"+relVal).text(parseInt($("#"+relVal).text())*2);
+						$("#"+(relVal+spaceOne)).text($("#"+(relVal+spaceTwo)).text());
+						$("#"+(relVal+spaceTwo)).text("");
+					} else if ($("#"+(relVal+spaceTwo)).text() == $("#"+(relVal+spaceOne)).text()) {
+						$("#"+(relVal+spaceOne)).text(parseInt($("#"+(relVal+spaceTwo)).text())*2);	
+						$("#"+(relVal+spaceTwo)).text("");
+					}
+				}	
 			}							
 
 			$(".tile").each(function(){
