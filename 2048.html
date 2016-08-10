@@ -66,16 +66,10 @@
 
 			if (direction == "w") {
 				for (var i = 0; i < firstWDirection.length; i++) {
-					exit = false;
 					relVal = firstWDirection[i];
-					if ($("#"+relVal).text() == $("#"+(relVal+3)).text()) {
-						if ($("#"+relVal).text() == $("#"+(relVal+6)).text()) {
-							if ($("#"+relVal).text() == ""){
-								exit = true;
-							}
-						}	
-					}
-					if (!exit) {
+					if ( ($("#"+relVal).text() == $("#"+(relVal+3)).text()) && ($("#"+relVal).text()) == ($("#"+(relVal+6)).text() && $("#"+relVal).text() == "") ) {
+						exit = true;	
+					} else {
 						if (($("#"+relVal).text() == "") && ($("#"+(relVal+3)).text() == "")){
 								$("#"+(relVal)).text($("#"+(relVal+6)).text());
 								$("#"+(relVal+6)).text("");
@@ -105,7 +99,7 @@
 							$("#"+(relVal+3)).text(parseInt($("#"+(relVal+6)).text())*2);	
 							$("#"+(relVal+6)).text("");
 						}
-					}
+					}	
 				}
 			}
 										
