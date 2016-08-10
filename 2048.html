@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>2048</title>
+	<style>
+
+	body {
+		font-size: 2em;
+		line-height: 200px;
+		text-align: center;
+	}
+
+	#game {
+		background-color: red;
+		width: 600px;
+		height: 600px;
+		margin: 0 auto;
+	}
+
+	.tile {
+		width: 200px;
+		height: 200px;
+		background-color: yellow;
+		float: left;
+	}
+
+	</style>
+</head>
+<body>
+
+<div id="game">
+	<div class="tile" id="0"></div>
+	<div class="tile" id="1"></div>
+	<div class="tile" id="2"></div>
+	<div class="tile" id="3"></div>
+	<div class="tile" id="4"></div>
+	<div class="tile" id="5"></div>
+	<div class="tile" id="6"></div>
+	<div class="tile" id="7"></div>
+	<div class="tile" id="8"></div>
+</div>
+
+<input type="text" autofocus id="inputField"/>
+
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script>
+
+	var id;
+	var availabilityCount = 0;
+	var gameOver = false;
+	var foundSpace = false;
+	var random;
+	var direction;
+	var exit = false;
+	var relVal;
+	var toContinue = true;
+	var firstWDirection = [2, 1, 0]
+	$("#2").text("2");
+
+	$("#inputField").keyup(function(){
+
+		if(!gameOver) {
+
+			direction = $("#inputField").val();
+			$("#inputField").val("");
+
+			if (direction == "w") {
+				for (var i = 0; i < firstWDirection.length; i++) {
+					exit = false;
+					relVal = firstWDirection[i];
+					if ($("#"+relVal).text() == $("#"+(relVal+3)).text()) {
+						if ($("#"+relVal).text() == $("#"+(relVal+6)).text()) {
+							if ($("#"+relVal).text() == ""){
+								exit = true;
+							}
+						}	
+					}
+					if (!exit) {
+						if (($("#"+relVal).text() == "") && ($("#"+(relVal+3)).text() == "")){
+								$("#"+(relVal)).text($("#"+(relVal+6)).text());
+								$("#"+(relVal+6)).text("");
+						} else if ($("#"+relVal).text() == "") {
+							if ($("#"+(relVal+3)).text() == ($("#"+(relVal+6)).text())) {
+								$("#"+relVal).text(parseInt($("#"+(relVal+3)).text())*2);
+								$("#"+(relVal+3)).text("");
+								$("#"+(relVal+6)).text("");
+							} else {
+								$("#"+relVal).text($("#"+(relVal+3)).text());
+								$("#"+(relVal+3)).text($("#"+(relVal+6)).text());
+								$("#"+(relVal+6)).text("");
+							}
+						} else if ($("#"+(relVal+3)).text() == "") {
+							if ($("#"+relVal).text() == $("#"+(relVal+6)).text()) {
+								$("#"+relVal).text(parseInt($("#"+relVal).text())*2);
+								$("#"+(relVal+6)).text("");
+							} else {
+								$("#"+(relVal+3)).text($("#"+(relVal+6)).text());
+								$("#"+(relVal+6)).text("");
+							}
+						} else if (($("#"+relVal).text()) == $("#"+(relVal+3)).text()) {
+							$("#"+relVal).text(parseInt($("#"+relVal).text())*2);
+							$("#"+(relVal+3)).text($("#"+(relVal+6)).text());
+							$("#"+(relVal+6)).text("");
+						} else if ($("#"+(relVal+6)).text() == $("#"+(relVal+3)).text()) {
+							$("#"+(relVal+3)).text(parseInt($("#"+(relVal+6)).text())*2);	
+							$("#"+(relVal+6)).text("");
+						}
+					}
+				}
+			}
+										
+
+			$(".tile").each(function(){
+				if(($(this).text()) == "") {
+					availabilityCount++;
+				}
+			})
+
+			if (availabilityCount == 0) {
+				gameOver = true;
+				foundSpace = true;
+			}
+
+			availabilityCount = 0;
+
+			while (!foundSpace) {
+				random = getRandomInt(0, 8);
+				if ($("#"+random).text() == "") {
+					$("#"+random).text("2");
+					foundSpace = true;
+				}	
+			}
+
+			foundSpace = false;
+
+		} else {
+			alert("game over");
+		}
+	});
+
+	function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+
+	} 
+
+</script>
+
+</body>
+</html>
