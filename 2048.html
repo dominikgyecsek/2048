@@ -54,7 +54,8 @@
 	var exit = false;
 	var relVal;
 	var toContinue = true;
-	var firstWDirection = [2, 1, 0]
+	var firstWDirection = [2, 1, 0];
+	var firstSDirection = [8, 7, 6];
 	$("#2").text("2");
 
 	$("#inputField").keyup(function(){
@@ -101,8 +102,44 @@
 						}
 					}	
 				}
-			}
-										
+			} else if (direction == "s") {
+				for (var i = 0; i < firstSDirection.length; i++) {
+					relVal = firstSDirection[i];
+					if ( ($("#"+relVal).text() == $("#"+(relVal-3)).text()) && ($("#"+relVal).text()) == ($("#"+(relVal-6)).text() && $("#"+relVal).text() == "") ) {
+						exit = true;	
+					} else {
+						if (($("#"+relVal).text() == "") && ($("#"+(relVal-3)).text() == "")){
+								$("#"+(relVal)).text($("#"+(relVal-6)).text());
+								$("#"+(relVal-6)).text("");
+						} else if ($("#"+relVal).text() == "") {
+							if ($("#"+(relVal-3)).text() == ($("#"+(relVal-6)).text())) {
+								$("#"+relVal).text(parseInt($("#"+(relVal-3)).text())*2);
+								$("#"+(relVal-3)).text("");
+								$("#"+(relVal-6)).text("");
+							} else {
+								$("#"+relVal).text($("#"+(relVal-3)).text());
+								$("#"+(relVal-3)).text($("#"+(relVal-6)).text());
+								$("#"+(relVal-6)).text("");
+							}
+						} else if ($("#"+(relVal-3)).text() == "") {
+							if ($("#"+relVal).text() == $("#"+(relVal-6)).text()) {
+								$("#"+relVal).text(parseInt($("#"+relVal).text())*2);
+								$("#"+(relVal-6)).text("");
+							} else {
+								$("#"+(relVal-3)).text($("#"+(relVal-6)).text());
+								$("#"+(relVal-6)).text("");
+							}
+						} else if (($("#"+relVal).text()) == $("#"+(relVal-3)).text()) {
+							$("#"+relVal).text(parseInt($("#"+relVal).text())*2);
+							$("#"+(relVal-3)).text($("#"+(relVal-6)).text());
+							$("#"+(relVal-6)).text("");
+						} else if ($("#"+(relVal-6)).text() == $("#"+(relVal-3)).text()) {
+							$("#"+(relVal-3)).text(parseInt($("#"+(relVal-6)).text())*2);	
+							$("#"+(relVal-6)).text("");
+						}
+					}	
+				}
+			}							
 
 			$(".tile").each(function(){
 				if(($(this).text()) == "") {
