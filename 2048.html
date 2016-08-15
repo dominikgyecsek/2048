@@ -2,34 +2,62 @@
 <html>
 <head>
 	<title>2048</title>
+	<link href='https://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+
 	<style>
 
 	body {
-		font-size: 6em;
-		line-height: 200px;
+		font-size: 30px;
 		text-align: center;
+		font-family: 'Droid Sans';
 	}
 
 	#game {
 		background-color: red;
-		width: 600px;
-		height: 600px;
+		width: 500px;
+		height: 500px;
 		margin: 0 auto;
 	}
 
 	.tile {
-		width: 200px;
-		height: 200px;
-		background-color: gray;
+		width: 100px;
+		height: 100px;
+		background-color: rgb(200, 200, 200);
 		float: left;
+		line-height: 100px;
 	}
+
+	.color-2 { background-color: #69D2E7; color: #FA6900; }
+	.color-4 { background-color: #FA6900; color: #69D2E7; }
+	.color-8 { background-color: #69D2E7; color: #FA6900; }
+	.color-16 { background-color: #69D2E7; color: #FA6900; }
+	.color-32 { background-color: #69D2E7; color: #FA6900; }
+	.color-64 { background-color: #69D2E7; color: #FA6900; }
+	.color-128 { background-color: #69D2E7; color: #FA6900; }
+	.color-256 { background-color: #69D2E7; color: #FA6900; }
+	.color-512 { background-color: #69D2E7; color: #FA6900; }
+	.color-1024 { background-color: #69D2E7; color: #FA6900; }
+	.color-2048 { background-color: #69D2E7; color: #FA6900; }
+	.color-4096 { background-color: #69D2E7; color: #FA6900; }
+	.color-8192 { background-color: #69D2E7; color: #FA6900; }
+	.color-16384 { background-color: #69D2E7; color: #FA6900; }
+	.color-32768 { background-color: #69D2E7; color: #FA6900; }
+	.color-65536 { background-color: #69D2E7; color: #FA6900; }
+	.color-131072 { background-color: #69D2E7; color: #FA6900; font-size: 25px; }
+	.color-262144 { background-color: #69D2E7; color: #FA6900; font-size: 25px; }
+	.color-524288 { background-color: #69D2E7; color: #FA6900; font-size: 25px; }
+	.color-1048576 { background-color: #69D2E7; color: #FA6900; font-size: 23px; }
+	.color-2097152 { background-color: #69D2E7; color: #FA6900; font-size: 23px; }
+	.color-4194304 { background-color: #69D2E7; color: #FA6900; font-size: 23px; }
+	.color-8388608 { background-color: #69D2E7; color: #FA6900; font-size: 23px; }
+	.color-16777216 { background-color: #69D2E7; color: #FA6900; font-size: 21px; }
+	.color-33554432 { background-color: #69D2E7; color: #FA6900; font-size: 21px; }
 
 	</style>
 </head>
 <body>
 
 <div id="game">
-	<div class="tile" id="0"></div>
 	<div class="tile" id="1"></div>
 	<div class="tile" id="2"></div>
 	<div class="tile" id="3"></div>
@@ -38,100 +66,84 @@
 	<div class="tile" id="6"></div>
 	<div class="tile" id="7"></div>
 	<div class="tile" id="8"></div>
+	<div class="tile" id="9"></div>
+	<div class="tile" id="10"></div>
+	<div class="tile" id="11"></div>
+	<div class="tile" id="12"></div>
+	<div class="tile" id="13"></div>
+	<div class="tile" id="14"></div>
+	<div class="tile" id="15"></div>
+	<div class="tile" id="16"></div>
+	<div class="tile" id="17"></div>
+	<div class="tile" id="18"></div>
+	<div class="tile" id="19"></div>
+	<div class="tile" id="20"></div>
+	<div class="tile" id="21"></div>
+	<div class="tile" id="22"></div>
+	<div class="tile" id="23"></div>
+	<div class="tile" id="24"></div>
+	<div class="tile" id="25"></div>
 </div>
 
-<input type="text" autofocus id="inputField"/>
-
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+
 <script>
 
-	var id;
 	var availabilityCount = 0;
 	var gameOver = false;
 	var foundSpace = false;
 	var random;
-	var direction;
-	var exit = false;
-	var relVal;
-	var toContinue = true;
-	var wDirection = [2, 1, 0];
-	var wSpace = [3, 6];
-	var sDirection = [8, 7, 6];
-	var sSpace = [-3, -6];
-	var aDirection = [0, 3, 6];
-	var aSpace = [1, 2];
-	var dDirection = [2, 5, 8];
-	var dSpace = [-1, -2];
-	var spaceOne, spaceTwo;
-	$("#2").text("2");
 
-	$("#inputField").keyup(function(){
+	var table = [ null,
+		2, 4, 8, 16, 32,
+		64, 128, 256, 512, 1024,
+		2048, 4096, 8192, 16384, 32768,
+		65536, 131072, 262144, 524288, 1048576,
+		2097152, 4194304, 8388608, 16777216, 33554432
+	]
+
+	drawTiles();
+
+	function drawTiles() {
+
+		for (var i = 2; i < 256; i *= 2) {
+			$(".color-" + i).removeClass("color-" + i);
+		}
+
+		for (var i = 1; i < table.length; i++) {
+
+			var value = table[i];
+			if (value == 0) value = "";
+			$("#" + i).text(value).addClass("color-" + value);
+		}
+
+	}
+
+	$("html").keyup(function(e){
 
 		if(!gameOver) {
 
-			direction = $("#inputField").val();
-			$("#inputField").val("");
+			switch (e.keyCode) {
 
-			for (var i = 0; i < 3; i++) {
+				case 65:
+					console.log("A");
+					break;
+				case 83:
+					console.log("S");
+					break;
+				case 68:
+					console.log("D");
+					break;
+				case 87:
+					console.log("W");
+					break;
+				default:
+					console.log("Invalid Input: " + e.keyCode);
+					break;
 
-				if (direction == "w") {
-					relVal = wDirection[i];
-					spaceOne = wSpace[0];
-					spaceTwo = wSpace[1];
-				}
+			}
 
-				if (direction == "s") {
-					relVal = sDirection[i];
-					spaceOne = sSpace[0];
-					spaceTwo = sSpace[1];
-				}	
-
-				if (direction == "a") {
-					relVal = aDirection[i];
-					spaceOne = aSpace[0];
-					spaceTwo = aSpace[1];
-				}	
-
-				if (direction == "d") {
-					relVal = dDirection[i];
-					spaceOne = dSpace[0];
-					spaceTwo = dSpace[1];
-				}	
-
-				if ( ($("#"+relVal).text() == $("#"+(relVal+spaceOne)).text()) && ($("#"+relVal).text()) == ($("#"+(relVal+spaceTwo)).text() && $("#"+relVal).text() == "") ) {
-					exit = true;	
-				} else {
-					if (($("#"+relVal).text() == "") && ($("#"+(relVal+spaceOne)).text() == "")){
-							$("#"+(relVal)).text($("#"+(relVal+spaceTwo)).text());
-							$("#"+(relVal+spaceTwo)).text("");
-					} else if ($("#"+relVal).text() == "") {
-						if ($("#"+(relVal+spaceOne)).text() == ($("#"+(relVal+spaceTwo)).text())) {
-							$("#"+relVal).text(parseInt($("#"+(relVal+spaceOne)).text())*2);
-							$("#"+(relVal+spaceOne)).text("");
-							$("#"+(relVal+spaceTwo)).text("");
-						} else {
-							$("#"+relVal).text($("#"+(relVal+spaceOne)).text());
-							$("#"+(relVal+spaceOne)).text($("#"+(relVal+spaceTwo)).text());
-							$("#"+(relVal+spaceTwo)).text("");
-						}
-					} else if ($("#"+(relVal+spaceOne)).text() == "") {
-						if ($("#"+relVal).text() == $("#"+(relVal+spaceTwo)).text()) {
-							$("#"+relVal).text(parseInt($("#"+relVal).text())*2);
-							$("#"+(relVal+spaceTwo)).text("");
-						} else {
-							$("#"+(relVal+spaceOne)).text($("#"+(relVal+spaceTwo)).text());
-							$("#"+(relVal+spaceTwo)).text("");
-						}
-					} else if (($("#"+relVal).text()) == $("#"+(relVal+spaceOne)).text()) {
-						$("#"+relVal).text(parseInt($("#"+relVal).text())*2);
-						$("#"+(relVal+spaceOne)).text($("#"+(relVal+spaceTwo)).text());
-						$("#"+(relVal+spaceTwo)).text("");
-					} else if ($("#"+(relVal+spaceTwo)).text() == $("#"+(relVal+spaceOne)).text()) {
-						$("#"+(relVal+spaceOne)).text(parseInt($("#"+(relVal+spaceTwo)).text())*2);	
-						$("#"+(relVal+spaceTwo)).text("");
-					}
-				}	
-			}							
+			drawTiles();
 
 			$(".tile").each(function(){
 				if(($(this).text()) == "") {
@@ -147,9 +159,9 @@
 			availabilityCount = 0;
 
 			while (!foundSpace) {
-				random = getRandomInt(0, 8);
-				if ($("#"+random).text() == "") {
-					$("#"+random).text("2");
+				random = getRandomInt(1, 25);
+				if ( table[random] == 0 ) {
+					table[random] = 2;
 					foundSpace = true;
 				}	
 			}
@@ -157,12 +169,16 @@
 			foundSpace = false;
 
 		} else {
+
 			alert("game over");
+
 		}
+
 	});
 
 	function getRandomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+
+    	return Math.floor(Math.random() * (max - min + 1)) + min;
 
 	} 
 
