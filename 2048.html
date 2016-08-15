@@ -29,29 +29,29 @@
 
 	.color-2 { background-color: #69D2E7; color: #FA6900; }
 	.color-4 { background-color: #FA6900; color: #69D2E7; }
-	.color-8 { background-color: #69D2E7; color: #FA6900; }
-	.color-16 { background-color: #69D2E7; color: #FA6900; }
-	.color-32 { background-color: #69D2E7; color: #FA6900; }
-	.color-64 { background-color: #69D2E7; color: #FA6900; }
-	.color-128 { background-color: #69D2E7; color: #FA6900; }
-	.color-256 { background-color: #69D2E7; color: #FA6900; }
-	.color-512 { background-color: #69D2E7; color: #FA6900; }
-	.color-1024 { background-color: #69D2E7; color: #FA6900; }
-	.color-2048 { background-color: #69D2E7; color: #FA6900; }
-	.color-4096 { background-color: #69D2E7; color: #FA6900; }
-	.color-8192 { background-color: #69D2E7; color: #FA6900; }
-	.color-16384 { background-color: #69D2E7; color: #FA6900; }
-	.color-32768 { background-color: #69D2E7; color: #FA6900; }
-	.color-65536 { background-color: #69D2E7; color: #FA6900; }
-	.color-131072 { background-color: #69D2E7; color: #FA6900; font-size: 25px; }
-	.color-262144 { background-color: #69D2E7; color: #FA6900; font-size: 25px; }
-	.color-524288 { background-color: #69D2E7; color: #FA6900; font-size: 25px; }
-	.color-1048576 { background-color: #69D2E7; color: #FA6900; font-size: 23px; }
-	.color-2097152 { background-color: #69D2E7; color: #FA6900; font-size: 23px; }
-	.color-4194304 { background-color: #69D2E7; color: #FA6900; font-size: 23px; }
-	.color-8388608 { background-color: #69D2E7; color: #FA6900; font-size: 23px; }
-	.color-16777216 { background-color: #69D2E7; color: #FA6900; font-size: 21px; }
-	.color-33554432 { background-color: #69D2E7; color: #FA6900; font-size: 21px; }
+	.color-8 { background-color: #ECD078; color: #C02942; }
+	.color-16 { background-color: #C02942; color: #ECD078; }
+	.color-32 { background-color: #A8DBA8; color: #3B8686; }
+	.color-64 { background-color: #3B8686; color: #A8DBA8; }
+	.color-128 { background-color: #774F38; color: #F1D4AF; }
+	.color-256 { background-color: #F1D4AF; color: #774F38; }
+	.color-512 { background-color: #547980; color: #E5FCC2; }
+	.color-1024 { background-color: #E5FCC2; color: #547980; }
+	.color-2048 { background-color: #00A0B0; color: #6A4A3C; }
+	.color-4096 { background-color: #6A4A3C; color: #00A0B0; }
+	.color-8192 { background-color: #E94E77; color: #C6E5D9; }
+	.color-16384 { background-color: #C6E5D9; color: #E94E77; }
+	.color-32768 { background-color: #FFFFFF; color: #1C140D; }
+	.color-65536 { background-color: #1C140D; color: #FFFFFF; }
+	.color-131072 { background-color: #73626E; color: #F7E4BE; font-size: 25px; }
+	.color-262144 { background-color: #F7E4BE; color: #73626E; font-size: 25px; }
+	.color-524288 { background-color: #005F6B; color: #00DFFC; font-size: 25px; }
+	.color-1048576 { background-color: #00DFFC; color: #005F6B; font-size: 23px; }
+	.color-2097152 { background-color: #645543; color: #BF4D28; font-size: 23px; }
+	.color-4194304 { background-color: #BF4D28; color: #645543; font-size: 23px; }
+	.color-8388608 { background-color: #8FBE00; color: #00A8C6; font-size: 23px; }
+	.color-16777216 { background-color: #00A8C6; color: #8FBE00; font-size: 21px; }
+	.color-33554432 { background-color: #FF9900; color: #424242; font-size: 21px; }
 
 	</style>
 </head>
@@ -89,11 +89,11 @@
 
 <script>
 
-	var availabilityCount = 0;
 	var gameOver = false;
 	var foundSpace = false;
 	var random;
 	var direction;
+	var isValidMove;
 
 	/*var table = [ null,
 		2, 4, 8, 16, 32,
@@ -104,14 +104,20 @@
 	]*/
 
 	var table = [null,
-		2,2,0,0,0,
-		4,2,0,2,2,
+		0,0,0,0,0,
+		0,0,0,0,0,
 		0,0,0,0,0,
 		0,0,0,0,0,
 		0,0,0,0,0
 	];
 
-	drawTiles();
+	initialize();
+
+	function initialize() {
+		console.log("INIT");
+		generateTile();
+		drawTiles();
+	}
 
 	function drawTiles() {
 
@@ -130,15 +136,10 @@
 
 	function shiftTiles() {
 
-		//console.log(direction);
-
-		// Get 2D Rows in relation to the swift direction
-
 		var multi = direction[5];
+		isValidMove = false;
 
 		for (var i = 0; i < 5; i++) {
-
-			console.log("Round: " + 1+i);
 
 			var startIndex = direction[i]
 			var indexes = [ startIndex, startIndex + multi, startIndex + multi*2, startIndex + multi*3, startIndex + multi*4 ];
@@ -151,19 +152,12 @@
 
 			}
 
-			/*console.log("Indexes: ");
-			console.log(indexes);
-			console.log("Values: ");
-			console.log(values);*/
-
 			if ( !isEmpty(values) ) {
 
 				values = shiftZeros(values);
 				values = mergeTiles(values);
 				values = shiftZeros(values);
 				
-				// Overwrite table
-
 				for (var j = 0; j < 5; j++) {
 
 					var index = indexes[j];
@@ -175,11 +169,13 @@
 
 		}
 
+		return isValidMove;
+
 	}
 
 	function shiftZeros(values) {
 
-		console.log("Bef: " + values);
+		var valuesOld = JSON.parse(JSON.stringify(values));
 
 		for (var i = 0; i < 5; i++) {
 
@@ -194,17 +190,21 @@
 			values.push(0);
 		}
 
-		console.log("Aft: " + values);
+		if ( !isSameArray(valuesOld, values) ) isValidMove = true;
 
 		return values;
 
 	}
 
+	function isSameArray(arr1, arr2) {
+
+		if ( arr1.length != arr2.length ) return false;
+		for (var i = 0; i < arr1.length; i++) if (arr1[i] != arr2[i]) return false;
+		return true;
+
+	}
+
 	function mergeTiles(values) {
-
-		console.log("MERGE");
-
-		console.log("Bef: " + values);
 
 		for (var i = 0; i < 4; i++) {
 
@@ -214,8 +214,6 @@
 			}
 
 		}
-
-		console.log("Aft:" + values);
 
 		return values;
 
@@ -229,63 +227,48 @@
 
 	}
 
+	function generateTile() {
+
+		if ( table.indexOf(0) == -1 ) {
+			gameOver = true;
+			
+		}
+
+		foundSpace = false;
+
+		while (!foundSpace) {
+			random = getRandomInt(1, 25);
+			if ( table[random] == 0 ) {
+				table[random] = 2;
+				foundSpace = true;
+			}	
+		}
+
+		foundSpace = false;
+
+	}
+
 	$("html").keydown(function(e){
 
 		if(!gameOver) {
 
 			switch (e.keyCode) {
 
-				case 65:
-					console.log("A");
-					direction = [1,6,11,16,21,1];
-					break;
-				case 83:
-					console.log("S");
-					direction = [21,22,23,24,25,-5];
-					break;
-				case 68:
-					console.log("D");
-					direction = [5,10,15,20,25,-1];
-					break;
-				case 87:
-					console.log("W");
-					direction = [1,2,3,4,5, 5];
-					break;
-				default:
-					console.log("Invalid Input: " + e.keyCode);
-					return;
-					break;
+				case 65: direction = [1,6,11,16,21,1]; break;
+				case 83: direction = [21,22,23,24,25,-5]; break;
+				case 68: direction = [5,10,15,20,25,-1]; break;
+				case 87: direction = [1,2,3,4,5, 5]; break;
+				default: return;
 
 			}
 
-			if (!isValid) return;
-
-			shiftTiles();
+			if ( !shiftTiles() ) return;
 
 			drawTiles();
 
-			$(".tile").each(function(){
-				if(($(this).text()) == "") {
-					availabilityCount++;
-				}
-			})
+			generateTile();
 
-			if (availabilityCount == 0) {
-				gameOver = true;
-				foundSpace = true;
-			}
-
-			availabilityCount = 0;
-
-			while (!foundSpace) {
-				random = getRandomInt(1, 25);
-				if ( table[random] == 0 ) {
-					table[random] = 2;
-					foundSpace = true;
-				}	
-			}
-
-			foundSpace = false;
+			drawTiles();
 
 		} else {
 
@@ -295,15 +278,15 @@
 
 	});
 
-	function isValid() {
-		return true;
-	}
-
 	function getRandomInt(min, max) {
 
     	return Math.floor(Math.random() * (max - min + 1)) + min;
 
 	} 
+
+	setInterval(function() {
+		console.log(table);
+	}, 5000);
 
 </script>
 
