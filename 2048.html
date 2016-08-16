@@ -10,21 +10,29 @@
 		font-size: 30px;
 		text-align: center;
 		font-family: 'Droid Sans';
+		width: 100%;
+		height: 100%;
+		margin: 0;
+		background-color: rgb(200, 200, 200);
+		box-sizing: border-box;
 	}
 
 	#game {
-		background-color: red;
 		width: 500px;
 		height: 500px;
 		margin: 0 auto;
+		border: 1px solid rgb(190,190,190);
+		border-radius: 10px;
+		padding: 4px;
 	}
 
 	.tile {
-		width: 100px;
-		height: 100px;
-		background-color: rgb(215, 215, 215);
+		width: 90px;
+		height: 90px;
 		float: left;
-		line-height: 100px;
+		line-height: 90px;
+		border-radius: 10px;
+		border: 5px solid rgb(200, 200, 200);
 	}
 
 	.color-2 { background-color: #69D2E7; color: #FA6900; }
@@ -46,12 +54,12 @@
 	.color-131072 { background-color: #73626E; color: #F7E4BE; font-size: 25px; }
 	.color-262144 { background-color: #F7E4BE; color: #73626E; font-size: 25px; }
 	.color-524288 { background-color: #005F6B; color: #00DFFC; font-size: 25px; }
-	.color-1048576 { background-color: #00DFFC; color: #005F6B; font-size: 23px; }
-	.color-2097152 { background-color: #645543; color: #BF4D28; font-size: 23px; }
-	.color-4194304 { background-color: #BF4D28; color: #645543; font-size: 23px; }
-	.color-8388608 { background-color: #8FBE00; color: #00A8C6; font-size: 23px; }
-	.color-16777216 { background-color: #00A8C6; color: #8FBE00; font-size: 21px; }
-	.color-33554432 { background-color: #FF9900; color: #424242; font-size: 21px; }
+	.color-1048576 { background-color: #00DFFC; color: #005F6B; font-size: 21px; }
+	.color-2097152 { background-color: #645543; color: #BF4D28; font-size: 21px; }
+	.color-4194304 { background-color: #BF4D28; color: #645543; font-size: 21px; }
+	.color-8388608 { background-color: #8FBE00; color: #00A8C6; font-size: 21px; }
+	.color-16777216 { background-color: #00A8C6; color: #8FBE00; font-size: 19px; }
+	.color-33554432 { background-color: #FF9900; color: #424242; font-size: 19px; }
 
 	</style>
 </head>
@@ -96,7 +104,7 @@
 	var isValidMove;
 
 	/*var table = [ null,
-		2, 4, 8, 16, 32,
+		0, 4, 8, 16, 32,
 		64, 128, 256, 512, 1024,
 		2048, 4096, 8192, 16384, 32768,
 		65536, 131072, 262144, 524288, 1048576,
@@ -121,7 +129,7 @@
 
 	function drawTiles() {
 
-		for (var i = 2; i < 256; i *= 2) {
+		for (var i = 2; i <= 33554432; i *= 2) {
 			$(".color-" + i).removeClass("color-" + i);
 		}
 
@@ -154,28 +162,65 @@
 
 			if ( !isEmpty(values) ) {
 
-				values = shiftZeros(values);
-				values = mergeTiles(values);
-				values = shiftZeros(values);
-				
-				for (var j = 0; j < 5; j++) {
+				values = shiftZeros(JSON.parse(JSON.stringify(values)));
+				values = mergeTiles(JSON.parse(JSON.stringify(values)));
+				values = shiftZeros(JSON.parse(JSON.stringify(values)));
 
-					var index = indexes[j];
-					table[index] = values[j];
-
-				}
+				storeTempTables(indexes, values, false);
 
 			}
 
 		}
 
+		storeTempTables(null, null, true);
+
 		return isValidMove;
+		//return true;
+
+	}
+
+	var indexesTemp = [], valuesTemp = [], iterationCount = 0;
+
+	function storeTempTables (indexes, values, isFinished) {
+
+		if ( !isFinished ) {
+
+			indexesTemp.push(indexes);
+			valuesTemp.push(values);
+			iterationCount++;
+
+		} else {
+
+			if ( isValidMove ) {
+
+				for (var i = 0; i < indexesTemp.length; i++) {
+
+					var valuesRow = valuesTemp[i];
+					var indexesRow = indexesTemp[i];
+
+					for (var j = 0; j < 5; j++) {
+
+						var index = indexesRow[j];
+						table[index] = valuesRow[j];
+
+					}
+
+				}
+
+				iterationCount = 0;
+				indexesTemp = [];
+				valuesTemp = [];
+
+			}
+
+		}
 
 	}
 
 	function shiftZeros(values) {
 
 		var valuesOld = JSON.parse(JSON.stringify(values));
+		var values = JSON.parse(JSON.stringify(values));
 
 		for (var i = 0; i < 5; i++) {
 
@@ -206,14 +251,20 @@
 
 	function mergeTiles(values) {
 
+		var valuesOld = JSON.parse(JSON.stringify(values));
+		var values = JSON.parse(JSON.stringify(values));
+
 		for (var i = 0; i < 4; i++) {
 
 			if ( values[i] == values[i+1] ) {
 				values[i] = values[i] * 2;
 				values[i+1] = 0;
+				break;
 			}
 
 		}
+
+		if ( !isSameArray(valuesOld, values) ) isValidMove = true;
 
 		return values;
 
@@ -263,12 +314,11 @@
 			}
 
 			if ( !shiftTiles() ) return;
-
-			drawTiles();
-
 			generateTile();
-
 			drawTiles();
+
+			console.log("--");
+			
 
 		} else {
 
@@ -283,10 +333,6 @@
     	return Math.floor(Math.random() * (max - min + 1)) + min;
 
 	} 
-
-	setInterval(function() {
-		console.log(table);
-	}, 5000);
 
 </script>
 
