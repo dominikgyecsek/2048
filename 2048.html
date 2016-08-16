@@ -13,17 +13,41 @@
 		width: 100%;
 		height: 100%;
 		margin: 0;
-		background-color: rgb(200, 200, 200);
 		box-sizing: border-box;
+	}
+
+	#wrapper {
+		width: 100%;
+		background-color: rgb(200, 200, 200);
+		height: 100vh;
+		display: flex;
+		justify-content: center;
 	}
 
 	#game {
 		width: 500px;
-		height: 500px;
+		height: 557px;
 		margin: 0 auto;
-		border: 1px solid rgb(190,190,190);
+		border: 3px solid rgb(160,160,160);
 		border-radius: 10px;
 		padding: 4px;
+		align-self: center;
+	}
+
+	#toolbar {
+		height: 50px;
+		width: 510px;
+		margin: auto;
+		right: 6px;
+		position: relative;
+		border-bottom: 3px solid rgb(160,160,160);
+		color: #656565;
+		font-size: 26px;
+		margin-bottom: 4px;
+	}
+
+	#toolbar>span {
+		padding: 8px 15px;
 	}
 
 	.tile {
@@ -31,9 +55,42 @@
 		height: 90px;
 		float: left;
 		line-height: 90px;
-		border-radius: 10px;
+		border-radius: 13px;
 		border: 5px solid rgb(200, 200, 200);
 	}
+
+	#restart-btn {
+		border: none;
+		background-color: transparent;
+		cursor: pointer;
+		color: #656565;
+		font-size: 26px;
+	}
+
+	.new {
+		animation-name: scaleUp;
+		animation-duration: 0.1s;
+		animation-fill-mode: forwards;
+	}
+
+	.old {
+		animation-name: scaleDown;
+		animation-duration: 0.1s;
+		animation-fill-mode: forwards;
+	}
+
+	@keyframes scaleUp {
+		0% { transform: scale(0.1,0.1); }
+		100% { transform: scale(1,1); }
+	}
+
+	@keyframes scaleDown {
+		0% { transform: scale(1,1); }
+		100% { transform: scale(0.1,0.1); }
+	}
+
+	.right { float: right; }
+	.left { float: left;  }
 
 	.color-2 { background-color: #69D2E7; color: #FA6900; }
 	.color-4 { background-color: #FA6900; color: #69D2E7; }
@@ -65,43 +122,76 @@
 </head>
 <body>
 
-<div id="game">
-	<div class="tile" id="1"></div>
-	<div class="tile" id="2"></div>
-	<div class="tile" id="3"></div>
-	<div class="tile" id="4"></div>
-	<div class="tile" id="5"></div>
-	<div class="tile" id="6"></div>
-	<div class="tile" id="7"></div>
-	<div class="tile" id="8"></div>
-	<div class="tile" id="9"></div>
-	<div class="tile" id="10"></div>
-	<div class="tile" id="11"></div>
-	<div class="tile" id="12"></div>
-	<div class="tile" id="13"></div>
-	<div class="tile" id="14"></div>
-	<div class="tile" id="15"></div>
-	<div class="tile" id="16"></div>
-	<div class="tile" id="17"></div>
-	<div class="tile" id="18"></div>
-	<div class="tile" id="19"></div>
-	<div class="tile" id="20"></div>
-	<div class="tile" id="21"></div>
-	<div class="tile" id="22"></div>
-	<div class="tile" id="23"></div>
-	<div class="tile" id="24"></div>
-	<div class="tile" id="25"></div>
+<div id="wrapper">
+	<div id="game">
+		<div id="toolbar">
+			<span class="left">
+				<span id="score-label"></span>
+				<span id="score"></span> 
+			</span>
+			<span class="right">
+				<button id="restart-btn"> Restart </button>
+			</span>
+		</div>
+		<div class="tile" id="1"></div>
+		<div class="tile" id="2"></div>
+		<div class="tile" id="3"></div>
+		<div class="tile" id="4"></div>
+		<div class="tile" id="5"></div>
+		<div class="tile" id="6"></div>
+		<div class="tile" id="7"></div>
+		<div class="tile" id="8"></div>
+		<div class="tile" id="9"></div>
+		<div class="tile" id="10"></div>
+		<div class="tile" id="11"></div>
+		<div class="tile" id="12"></div>
+		<div class="tile" id="13"></div>
+		<div class="tile" id="14"></div>
+		<div class="tile" id="15"></div>
+		<div class="tile" id="16"></div>
+		<div class="tile" id="17"></div>
+		<div class="tile" id="18"></div>
+		<div class="tile" id="19"></div>
+		<div class="tile" id="20"></div>
+		<div class="tile" id="21"></div>
+		<div class="tile" id="22"></div>
+		<div class="tile" id="23"></div>
+		<div class="tile" id="24"></div>
+		<div class="tile" id="25"></div>
+	</div>
 </div>
 
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 
 <script>
 
-	var gameOver = false;
-	var foundSpace = false;
-	var random;
-	var direction;
-	var isValidMove;
+	$(document).ready(function() {
+
+		initialize();
+
+		$("html").keydown(function(e){
+
+			switch (e.keyCode) {
+
+				case 65: direction = [1,6,11,16,21,1]; break;
+				case 83: direction = [21,22,23,24,25,-5]; break;
+				case 68: direction = [5,10,15,20,25,-1]; break;
+				case 87: direction = [1,2,3,4,5, 5]; break;
+				default: return;
+
+			}
+
+			if ( !shiftTiles() ) return;
+			generateTile();
+			drawTiles();
+
+		});
+
+		$("#restart-btn").click(initialize);
+
+	})
+
+	var direction, isValidMove, table, score;
 
 	/*var table = [ null,
 		0, 4, 8, 16, 32,
@@ -111,34 +201,43 @@
 		2097152, 4194304, 8388608, 16777216, 33554432
 	]*/
 
-	var table = [null,
-		0,0,0,0,0,
-		0,0,0,0,0,
-		0,0,0,0,0,
-		0,0,0,0,0,
-		0,0,0,0,0
-	];
-
-	initialize();
+	
 
 	function initialize() {
-		console.log("INIT");
+		table = [null,
+			0,0,0,0,0,
+			0,0,0,0,0,
+			0,0,0,0,0,
+			0,0,0,0,0,
+			0,0,0,0,0
+		]
 		generateTile();
 		drawTiles();
+		score = 0;
+		$("#score").text("");
+		$("#score-label").text("Use W,A,S,D to move");
 	}
 
 	function drawTiles() {
 
-		for (var i = 2; i <= 33554432; i *= 2) {
-			$(".color-" + i).removeClass("color-" + i);
-		}
+		$(".tile").addClass("old");
 
-		for (var i = 1; i < table.length; i++) {
+		setTimeout(function() {
 
-			var value = table[i];
-			if (value == 0) value = "";
-			$("#" + i).text(value).addClass("color-" + value);
-		}
+			for (var i = 2; i <= 33554432; i *= 2) {
+				$(".color-" + i).removeClass("color-" + i);
+			}
+
+			$(".tile").removeClass("old").addClass("new");
+
+			for (var i = 1; i < table.length; i++) {
+				var value = table[i];
+				if (value == 0) value = "";
+				$("#" + i).text(value).addClass("color-" + value);
+			}
+
+		}, 100)
+
 
 	}
 
@@ -258,6 +357,9 @@
 
 			if ( values[i] == values[i+1] ) {
 				values[i] = values[i] * 2;
+				score += values[i]
+				$("#score").text(score);
+				$("#score-label").text("Score: ");
 				values[i+1] = 0;
 				break;
 			}
@@ -280,17 +382,14 @@
 
 	function generateTile() {
 
-		if ( table.indexOf(0) == -1 ) {
-			gameOver = true;
-			
-		}
-
-		foundSpace = false;
+		var foundSpace = false;
 
 		while (!foundSpace) {
-			random = getRandomInt(1, 25);
+			var random = getRandomInt(1, 25);
 			if ( table[random] == 0 ) {
 				table[random] = 2;
+				//$(".new").removeClass("new");
+				//$("#" + random).addClass("new");
 				foundSpace = true;
 			}	
 		}
@@ -298,35 +397,6 @@
 		foundSpace = false;
 
 	}
-
-	$("html").keydown(function(e){
-
-		if(!gameOver) {
-
-			switch (e.keyCode) {
-
-				case 65: direction = [1,6,11,16,21,1]; break;
-				case 83: direction = [21,22,23,24,25,-5]; break;
-				case 68: direction = [5,10,15,20,25,-1]; break;
-				case 87: direction = [1,2,3,4,5, 5]; break;
-				default: return;
-
-			}
-
-			if ( !shiftTiles() ) return;
-			generateTile();
-			drawTiles();
-
-			console.log("--");
-			
-
-		} else {
-
-			alert("game over");
-
-		}
-
-	});
 
 	function getRandomInt(min, max) {
 
