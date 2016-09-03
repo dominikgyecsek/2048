@@ -14,6 +14,12 @@
 		height: 100%;
 		margin: 0;
 		box-sizing: border-box;
+		-webkit-touch-callout: none;
+		-webkit-user-select: none;
+		-khtml-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;     
 	}
 
 	#wrapper {
@@ -162,12 +168,99 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="jquery.mobile-1.4.5.min.js"></script>
 
 <script>
+
+var supportTouch = $.support.touch,
+            scrollEvent = "touchmove scroll",
+            touchStartEvent = supportTouch ? "touchstart" : "mousedown",
+            touchStopEvent = supportTouch ? "touchend" : "mouseup",
+            touchMoveEvent = supportTouch ? "touchmove" : "mousemove";
+    $.event.special.swipeupdown = {
+        setup: function() {
+            var thisObject = this;
+            var $this = $(thisObject);
+            $this.bind(touchStartEvent, function(event) {
+                var data = event.originalEvent.touches ?
+                        event.originalEvent.touches[ 0 ] :
+                        event,
+                        start = {
+                            time: (new Date).getTime(),
+                            coords: [ data.pageX, data.pageY ],
+                            origin: $(event.target)
+                        },
+                        stop;
+
+                function moveHandler(event) {
+                    if (!start) {
+                        return;
+                    }
+                    var data = event.originalEvent.touches ?
+                            event.originalEvent.touches[ 0 ] :
+                            event;
+                    stop = {
+                        time: (new Date).getTime(),
+                        coords: [ data.pageX, data.pageY ]
+                    };
+
+                    // prevent scrolling
+                    if (Math.abs(start.coords[1] - stop.coords[1]) > 10) {
+                        event.preventDefault();
+                    }
+                }
+                $this
+                        .bind(touchMoveEvent, moveHandler)
+                        .one(touchStopEvent, function(event) {
+                    $this.unbind(touchMoveEvent, moveHandler);
+                    if (start && stop) {
+                        if (stop.time - start.time < 1000 &&
+                                Math.abs(start.coords[1] - stop.coords[1]) > 30 &&
+                                Math.abs(start.coords[0] - stop.coords[0]) < 75) {
+                            start.origin
+                                    .trigger("swipeupdown")
+                                    .trigger(start.coords[1] > stop.coords[1] ? "swipeup" : "swipedown");
+                        }
+                    }
+                    start = stop = undefined;
+                });
+            });
+        }
+    };
+    $.each({
+        swipedown: "swipeupdown",
+        swipeup: "swipeupdown"
+    }, function(event, sourceEvent){
+        $.event.special[event] = {
+            setup: function(){
+                $(this).bind(sourceEvent, $.noop);
+            }
+        };
+    });
 
 	$(document).ready(function() {
 
 		initialize();
+
+		$('#wrapper').on('swipedown',function(){
+			direction = [21,22,23,24,25,-5];
+			processMove();
+		} );
+
+		$('#wrapper').on('swipeup',function(){
+			direction = [1,2,3,4,5, 5];
+			processMove();
+		} );
+
+		$('#wrapper').on('swiperight',function(){
+			direction = [5,10,15,20,25,-1];
+			processMove();
+		} );
+
+		$('#wrapper').on('swipeleft',function(){
+			direction = [1,6,11,16,21,1];
+			processMove();
+		} );
 
 		$("html").keydown(function(e){
 
@@ -181,13 +274,11 @@
 
 			}
 
-			if ( !shiftTiles() ) return;
-			generateTile();
-			drawTiles();
-
 		});
 
 		$("#restart-btn").click(initialize);
+
+		processMove();
 
 	})
 
@@ -201,7 +292,11 @@
 		2097152, 4194304, 8388608, 16777216, 33554432
 	]*/
 
-	
+	function processMove() {
+		if ( !shiftTiles() ) return;
+		generateTile();
+		drawTiles();
+	}
 
 	function initialize() {
 		table = [null,
@@ -387,9 +482,12 @@
 		while (!foundSpace) {
 			var random = getRandomInt(1, 25);
 			if ( table[random] == 0 ) {
-				table[random] = 2;
-				//$(".new").removeClass("new");
-				//$("#" + random).addClass("new");
+				var value = getRandomInt(1,2);
+				switch(value) {
+					case 1: value = 2; break;
+					case 2: value = 4; break;
+				}
+				table[random] = value;
 				foundSpace = true;
 			}	
 		}
