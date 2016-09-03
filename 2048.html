@@ -3,11 +3,14 @@
 <head>
 	<title>2048</title>
 	<link href='https://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
 
 	<style>
 
+.ui-loading .ui-loader { display: block; }
+.ui-loader { display: none; position: absolute; opacity: .85; z-index: 100; left: 50%; width: 200px; margin-left: -130px; margin-top: -35px; padding: 10px 30px; }
+
 	body {
-		font-size: 30px;
 		text-align: center;
 		font-family: 'Droid Sans';
 		width: 100%;
@@ -19,58 +22,51 @@
 		-khtml-user-select: none;
 		-moz-user-select: none;
 		-ms-user-select: none;
-		user-select: none;     
+		user-select: none;
+		font-size: 1em 
 	}
 
 	#wrapper {
 		width: 100%;
-		background-color: rgb(200, 200, 200);
+		background-color: rgb(235, 235, 235);
 		height: 100vh;
-		display: flex;
-		justify-content: center;
+		overflow: hidden;
 	}
 
 	#game {
-		width: 500px;
-		height: 557px;
+		width: 100%;
+		height: 100%;
 		margin: 0 auto;
-		border: 3px solid rgb(160,160,160);
-		border-radius: 10px;
 		padding: 4px;
-		align-self: center;
 	}
 
 	#toolbar {
-		height: 50px;
-		width: 510px;
-		margin: auto;
-		right: 6px;
-		position: relative;
-		border-bottom: 3px solid rgb(160,160,160);
 		color: #656565;
-		font-size: 26px;
-		margin-bottom: 4px;
+		font-size: 24px;
+		height: 46px;
+		width: calc(100% - 8px);
+		background-color: rgb(215, 215, 215);
 	}
 
 	#toolbar>span {
-		padding: 8px 15px;
+		padding: 4px 10px;
 	}
 
 	.tile {
-		width: 90px;
-		height: 90px;
+		width: calc(20% - 12px);
+		height: calc(20% - 20px);
 		float: left;
-		line-height: 90px;
 		border-radius: 13px;
-		border: 5px solid rgb(200, 200, 200);
+		line-height: 17vh;
+		border: 5px solid rgb(235, 235, 235);
 	}
 
-	#restart-btn {
+	#restart-btn, #mode {
 		border: none;
 		background-color: transparent;
 		cursor: pointer;
+		font-size: 14px;
 		color: #656565;
-		font-size: 26px;
 	}
 
 	.new {
@@ -98,6 +94,18 @@
 	.right { float: right; }
 	.left { float: left;  }
 
+	@media (min-width: 600px) {
+		body {
+			font-size: 2em;
+		}
+	}
+
+	@media (min-width: 800px) {
+		body {
+			font-size: 2.6em;
+		}
+	}
+
 	.color-2 { background-color: #69D2E7; color: #FA6900; }
 	.color-4 { background-color: #FA6900; color: #69D2E7; }
 	.color-8 { background-color: #ECD078; color: #C02942; }
@@ -107,22 +115,48 @@
 	.color-128 { background-color: #774F38; color: #F1D4AF; }
 	.color-256 { background-color: #F1D4AF; color: #774F38; }
 	.color-512 { background-color: #547980; color: #E5FCC2; }
-	.color-1024 { background-color: #E5FCC2; color: #547980; }
-	.color-2048 { background-color: #00A0B0; color: #6A4A3C; }
-	.color-4096 { background-color: #6A4A3C; color: #00A0B0; }
-	.color-8192 { background-color: #E94E77; color: #C6E5D9; }
-	.color-16384 { background-color: #C6E5D9; color: #E94E77; }
-	.color-32768 { background-color: #FFFFFF; color: #1C140D; }
-	.color-65536 { background-color: #1C140D; color: #FFFFFF; }
-	.color-131072 { background-color: #73626E; color: #F7E4BE; font-size: 25px; }
-	.color-262144 { background-color: #F7E4BE; color: #73626E; font-size: 25px; }
-	.color-524288 { background-color: #005F6B; color: #00DFFC; font-size: 25px; }
-	.color-1048576 { background-color: #00DFFC; color: #005F6B; font-size: 21px; }
-	.color-2097152 { background-color: #645543; color: #BF4D28; font-size: 21px; }
-	.color-4194304 { background-color: #BF4D28; color: #645543; font-size: 21px; }
-	.color-8388608 { background-color: #8FBE00; color: #00A8C6; font-size: 21px; }
-	.color-16777216 { background-color: #00A8C6; color: #8FBE00; font-size: 19px; }
-	.color-33554432 { background-color: #FF9900; color: #424242; font-size: 19px; }
+	.color-1024 { background-color: #E5FCC2; color: #547980; font-size: 1.3em; }
+	.color-2048 { background-color: #00A0B0; color: #6A4A3C; font-size: 1.3em; }
+	.color-4096 { background-color: #6A4A3C; color: #00A0B0; font-size: 1.3em; }
+	.color-8192 { background-color: #E94E77; color: #C6E5D9; font-size: 1.3em }
+	.color-16384 { background-color: #C6E5D9; color: #E94E77; font-size: 1.1em; }
+	.color-32768 { background-color: #FFFFFF; color: #1C140D; font-size: 1.1em; }
+	.color-65536 { background-color: #1C140D; color: #FFFFFF; font-size: 1.1em; }
+	.color-131072 { background-color: #73626E; color: #F7E4BE; font-size: 0.9em; }
+	.color-262144 { background-color: #F7E4BE; color: #73626E; font-size: 0.9em; }
+	.color-524288 { background-color: #005F6B; color: #00DFFC; font-size: 0.9em; }
+	.color-1048576 { background-color: #00DFFC; color: #005F6B; font-size: 0.8em; }
+	.color-2097152 { background-color: #645543; color: #BF4D28; font-size: 0.7em; }
+	.color-4194304 { background-color: #BF4D28; color: #645543; font-size: 0.7em; }
+	.color-8388608 { background-color: #8FBE00; color: #00A8C6; font-size: 0.7em; }
+	.color-16777216 { background-color: #00A8C6; color: #8FBE00; font-size: 0.6em; }
+	.color-33554432 { background-color: #FF9900; color: #424242; font-size: 0.6em; }
+
+	.color-50331648 { background-color: #69D2E7; color: #FA6900; font-size: 0.6em; }
+	.color-25165824 { background-color: #FA6900; color: #69D2E7; font-size: 0.6em; }
+	.color-12582912 { background-color: #ECD078; color: #C02942; font-size: 0.6em; }
+	.color-6291456 { background-color: #C02942; color: #ECD078; font-size: 0.7em; }
+	.color-3145728 { background-color: #A8DBA8; color: #3B8686; font-size: 0.7em; }
+	.color-1572864 { background-color: #3B8686; color: #A8DBA8; font-size: 0.7em; }
+	.color-786432 { background-color: #774F38; color: #F1D4AF; font-size: 0.9em; }
+	.color-393216 { background-color: #F1D4AF; color: #774F38; font-size: 0.9em; }
+	.color-196608 { background-color: #547980; color: #E5FCC2; font-size: 0.9em; }
+	.color-98304 { background-color: #E5FCC2; color: #547980; }
+	.color-49152 { background-color: #00A0B0; color: #6A4A3C; }
+	.color-24576 { background-color: #6A4A3C; color: #00A0B0; }
+	.color-12288 { background-color: #E94E77; color: #C6E5D9; }
+	.color-6144 { background-color: #C6E5D9; color: #E94E77; }
+	.color-3072 { background-color: #FFFFFF; color: #1C140D; }
+	.color-1536 { background-color: #1C140D; color: #FFFFFF; }
+	.color-768 { background-color: #73626E; color: #F7E4BE; }
+	.color-384 { background-color: #F7E4BE; color: #73626E; }
+	.color-192 { background-color: #005F6B; color: #00DFFC; }
+	.color-96 { background-color: #00DFFC; color: #005F6B; }
+	.color-48 { background-color: #645543; color: #BF4D28; }
+	.color-24 { background-color: #BF4D28; color: #645543; }
+	.color-12 { background-color: #8FBE00; color: #00A8C6; }
+	.color-6 { background-color: #00A8C6; color: #8FBE00; }
+	.color-3 { background-color: #FF9900; color: #424242; }
 
 	</style>
 </head>
@@ -132,10 +166,10 @@
 	<div id="game">
 		<div id="toolbar">
 			<span class="left">
-				<span id="score-label"></span>
 				<span id="score"></span> 
 			</span>
 			<span class="right">
+				<button id="mode"> Mode: 2 </button>
 				<button id="restart-btn"> Restart </button>
 			</span>
 		</div>
@@ -270,19 +304,28 @@ var supportTouch = $.support.touch,
 				case 83: direction = [21,22,23,24,25,-5]; break;
 				case 68: direction = [5,10,15,20,25,-1]; break;
 				case 87: direction = [1,2,3,4,5, 5]; break;
+				case 37: direction = [1,6,11,16,21,1]; break;
+				case 40: direction = [21,22,23,24,25,-5]; break;
+				case 39: direction = [5,10,15,20,25,-1]; break;
+				case 38: direction = [1,2,3,4,5, 5]; break;
+
 				default: return;
 
 			}
+
+			processMove();
 
 		});
 
 		$("#restart-btn").click(initialize);
 
-		processMove();
+		$("#mode").click(changeMode)
 
 	})
 
 	var direction, isValidMove, table, score;
+	var mode = 0;
+	var modes = ["2", "3", "2/3"];
 
 	/*var table = [ null,
 		0, 4, 8, 16, 32,
@@ -292,6 +335,23 @@ var supportTouch = $.support.touch,
 		2097152, 4194304, 8388608, 16777216, 33554432
 	]*/
 
+	/*var table = [ null,
+		3, 6, 12, 24, 48,
+		96, 192, 384, 768, 1536,
+		3072, 6144, 12288, 24576, 49152,
+		98304, 393216, 786432, 1572864, 3145728,
+		6291456, 12582912, 25165824, 25165824, 50331648
+	]*/
+
+	function changeMode() {
+
+		if (mode == 2) mode = 0
+		else mode += 1
+		$("#mode").text("Mode: " + modes[mode]);
+		initialize();
+
+	}
+
 	function processMove() {
 		if ( !shiftTiles() ) return;
 		generateTile();
@@ -299,18 +359,17 @@ var supportTouch = $.support.touch,
 	}
 
 	function initialize() {
-		table = [null,
-			0,0,0,0,0,
-			0,0,0,0,0,
-			0,0,0,0,0,
-			0,0,0,0,0,
-			0,0,0,0,0
+		table = [ null,
+			0, 0, 0, 0, 0, 
+			0, 0, 0, 0, 0, 
+			0, 0, 0, 0, 0, 
+			0, 0, 0, 0, 0, 
+			0, 0, 0, 0, 0
 		]
 		generateTile();
 		drawTiles();
 		score = 0;
-		$("#score").text("");
-		$("#score-label").text("Use W,A,S,D to move");
+		$("#score").text("Score: 0");
 	}
 
 	function drawTiles() {
@@ -320,6 +379,10 @@ var supportTouch = $.support.touch,
 		setTimeout(function() {
 
 			for (var i = 2; i <= 33554432; i *= 2) {
+				$(".color-" + i).removeClass("color-" + i);
+			}
+
+			for (var i = 3; i <= 50331648; i *= 2) {
 				$(".color-" + i).removeClass("color-" + i);
 			}
 
@@ -454,7 +517,6 @@ var supportTouch = $.support.touch,
 				values[i] = values[i] * 2;
 				score += values[i]
 				$("#score").text(score);
-				$("#score-label").text("Score: ");
 				values[i+1] = 0;
 				break;
 			}
@@ -482,11 +544,31 @@ var supportTouch = $.support.touch,
 		while (!foundSpace) {
 			var random = getRandomInt(1, 25);
 			if ( table[random] == 0 ) {
-				var value = getRandomInt(1,2);
-				switch(value) {
-					case 1: value = 2; break;
-					case 2: value = 4; break;
+				console.log(mode)
+				if (mode != 2) {
+					var value = getRandomInt(1,2);
+					if (mode == 0) {
+						switch(value) {
+							case 1: value = 2; break;
+							case 2: value = 4; break;
+						}
+					} else {
+						switch(value) {
+							case 1: value = 3; break;
+							case 2: value = 6; break;
+						}						
+					}
+				} else {
+					var value = getRandomInt(1,4);
+					switch(value) {
+						case 1: value = 3; break;
+						case 2: value = 6; break;
+						case 1: value = 2; break;
+						case 2: value = 4; break;
+					}	
 				}
+				console.log("Value: " + value);
+				console.log("Place: " + random)
 				table[random] = value;
 				foundSpace = true;
 			}	
