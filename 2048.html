@@ -31,6 +31,8 @@
 		background-color: rgb(235, 235, 235);
 		height: 100vh;
 		overflow: hidden;
+		display: flex;
+		justify-content: center;
 	}
 
 	#game {
@@ -38,18 +40,23 @@
 		height: 100%;
 		margin: 0 auto;
 		padding: 4px;
+		align-self: center;
 	}
 
 	#toolbar {
 		color: #656565;
 		font-size: 24px;
-		height: 46px;
+		height: 38px;
 		width: calc(100% - 8px);
-		background-color: rgb(215, 215, 215);
 	}
 
 	#toolbar>span {
-		padding: 4px 10px;
+		padding: 0px 10px;
+	}
+
+	#score {
+		display: inline-block;
+		padding: 4px 0px;
 	}
 
 	.tile {
@@ -58,7 +65,14 @@
 		float: left;
 		border-radius: 13px;
 		line-height: 17vh;
-		border: 5px solid rgb(235, 235, 235);
+		margin: 5px;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+	}
+
+	.tile:not(:empty) {
+		box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 	}
 
 	#restart-btn, #mode {
@@ -271,6 +285,28 @@ var supportTouch = $.support.touch,
             }
         };
     });
+
+    $(window).resize(resize)
+
+	$(document).ready(function() {
+
+		resize();
+
+	})
+
+	function resize() {
+
+		var width = $(window).width();
+		var height = $(window).height();
+		if (height < width) {
+			$("#game").css("width", height);
+			$("#game").css("height", "100%");
+		} else {
+			$("#game").css("height", width);
+			$("#game").css("width", "100%");
+		}
+
+	}
 
 	$(document).ready(function() {
 
